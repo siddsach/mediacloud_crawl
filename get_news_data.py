@@ -1,24 +1,25 @@
 import mediacloud
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 from boilerpipe.extract import Extractor
 import os
 
+API_KEY = open('mc_key.txt', 'r').read()
 SOURCE_PATH = 'source mediacloud IDS.csv'
 OUT = 'data'
 
 class Crawler:
     def __init__(self, api_key, source_path = SOURCE_PATH, particular_sources = None, max_stories = 100, out_path = OUT):
         self.mc = mediacloud.api.MediaCloud(api_key)
-        self.sources = self.get_sources(source_path)
+        self.sources = self.get_all_sources(source_path)
         self.keywords = []
         if particular_sources is not None:
-            sources = {s:self.sources[s] for s in particular_sources}
-            self.data = self.get_story_links(sources, max_stories)
+            self.sources = {s:self.sources[s] for s in particular_sources}
+            self.data = self.get_story_links(self.sources, max_stories)
         else:
             self.data = self.get_story_links(self.sources), max_stories
         self.get_articles(out_path)
 
-    def get_sources(self, path):
+    def get_all_sources(self, path):
         source_data = open(path, 'r').readlines()
         sources = dict()
         for line in source_data:
