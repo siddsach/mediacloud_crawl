@@ -1,0 +1,2 @@
+mediacloud==2.39.1
+boilerpipe==1.3.0
